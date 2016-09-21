@@ -19,7 +19,7 @@ io.on('connection', function(socket){
         console.log('Message Received: ' + message.text);
         // io.emit  would broadcast the message to everyone including the person that sent the message.
         // socket.broadcast.emit  would broadcast the message to everyone EXCEPT the person that sent the message.
-        socket.broadcast.emit('message', message);
+        io.emit('message', message);
     });
 
     socket.emit('message', {
