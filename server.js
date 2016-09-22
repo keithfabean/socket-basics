@@ -2,6 +2,7 @@ var PORT = process.env.PORT || 3000;
 
 var express = require('express');
 var app = express();
+
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var moment = require('moment');
@@ -9,8 +10,34 @@ var now = moment();
 
 
 app.use(express.static(__dirname + '/public'));
+//--------------------------------------------------------------------
 
 var clientInfo = {};
+
+//--------------------------------------------------------------------
+
+//sends current users to the provided socket
+function sendCurrentUsers(socket){
+    var info = clientInfo[socket.id];
+    users = [];
+
+    if (typeof info === 'undefined'){
+        return;
+    }
+    Object.keys(clientInfo).forEach(function(socketId){
+        var userInfo = clientInfo[socketId];
+        if (info.room === userInfo.room){
+            users.push(userInfo.name);
+        }
+    });
+
+    socket.emit('message', {
+        name: 'System',
+        text: 'Current Users: ' + users.join(', '),
+        timestamp: now.valueOf()
+    });
+}
+
 //--------------------------------------------------------------------
 
 //--------------------------------------------------------------------
@@ -47,12 +74,19 @@ io.on('connection', function(socket){
 
     socket.on('message', function(message){
         console.log('Message Received: ' + message.text);
-        // io.emit  would broadcast the message to everyone including the person that sent the message.
-        // socket.broadcast.emit  would broadcast the message to everyone EXCEPT the person that sent the message.
-        //io.emit('message', message);
-        //This changes the emit so it only sends the message to the right room for the user
-        // |----------------------------|
-        io.to(clientInfo[socket.id].room).emit('message', message);
+
+        // look for a special message @currentUsers
+        if (message.text === '@currentUsers'){
+            sendCurrentUsers(socket);
+        } else {
+            // io.emit  would broadcast the message to everyone including the person that sent the message.
+            // socket.broadcast.emit  would broadcast the message to everyone EXCEPT the person that sent the message.
+            //io.emit('message', message);
+            //This changes the emit so it only sends the message to the right room for the user
+            // |----------------------------|
+            io.to(clientInfo[socket.id].room).emit('message', message);
+        }
+
     });
 
     // Send an initial message to the participant when the enter the chat app
