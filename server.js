@@ -27,6 +27,7 @@ io.on('connection', function(socket){
 
     // Send an initial message to the participant when the enter the chat app
     socket.emit('message', {
+        name: 'System',
         text: 'Welcome to the chat application.',
         timestamp: now.valueOf()
     });
