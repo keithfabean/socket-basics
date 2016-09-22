@@ -1,4 +1,6 @@
-
+// app.js file
+// this file is included in the index.html file
+//
 var socket = io();
 
 socket.on('connect', function(){
@@ -8,7 +10,10 @@ socket.on('connect', function(){
 socket.on('message', function(message){
     console.log('New message:');
     console.log(message.text);
-    jQuery('.messages').append('<p>' + message.text + '</p>');
+    // add the moment timestamp (formatted) to the displayed message
+    var timestampmoment = moment.utc(message.timestamp);
+//    jQuery('.messages').append('<p>' + message.timestamp + '&emsp;'  + message.text + '</p>');
+    jQuery('.messages').append('<p>' + timestampmoment.local().format('h:mm a') + ': &emsp;' + message.text + '</p>');
 });
 
 //Handles submitting of new message
