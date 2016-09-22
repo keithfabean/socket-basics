@@ -18,7 +18,20 @@ var clientInfo = {};
 //--------------------------------------------------------------------
 io.on('connection', function(socket){
     console.log('*** server.js *** - User connected via Socket-io');
-    console.log(now.valueOf());
+
+    socket.on('disconnect', function(){
+        //set the clientInfo object to the request object.
+        //And let socket generate a unique id for the person joining the chat.
+        if (typeof clientInfo[socket.id] !== 'undefined'){
+            socket.leave(clientInfo[socket.id].room);
+            io.to(clientInfo[socket.id].room).emit('message', {
+                name: 'System',
+                text: clientInfo[socket.id].name + ' has left the Chat.',
+                timestamp: now.valueOf()
+            });
+            delete clientInfo[socket.id];
+        }
+    });
 
     socket.on('joinroom', function(req){
         //set the clientInfo object to the request object.
