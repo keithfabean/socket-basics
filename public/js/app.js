@@ -4,12 +4,19 @@
 var name = getQueryVariable('name') || 'Anonymous';
 var room = getQueryVariable('room');
 
+//update the h1 tag in chat.html
+$(".room-title").text('Chat Room: ' + room);
+
 var socket = io();
 
 console.log(name + ' has joined ' + room);
 
 socket.on('connect', function(){
     console.log('*** app.js *** - Connected to socket.io server!');
+    socket.emit('joinroom', {
+        name: name,
+        room: room
+    });
 });
 
 socket.on('message', function(message){
