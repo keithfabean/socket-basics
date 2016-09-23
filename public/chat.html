@@ -5,6 +5,11 @@
     <title>Socket.io Basics</title>
     <link rel="stylesheet" href="./css/bootstrap.min.css">
     <link rel="stylesheet" href="./css/styles.css">
+    <style>
+        .well{
+            margin-top: 35px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -14,9 +19,11 @@
                 <!-- Link to the index.html page  -->
                 <a href="/index.html">Change Settings</a>
 
-                <h1 class="room-title"><!-- Set this in app.js --></h1>
-                
-                <!-- messages is the class name that allows us to find and add messages
+                <!-- room-title is the class name that allows us to find this h1 tag
+                    text-center is the bootstrap class for styling -->
+                <h1 class="room-title text-center"><!-- Set this in app.js --></h1>
+
+                <!-- messages is the class name that allows us to find this tag to add messages
                     list-group is the bootstrap class for styling -->
                 <ul class="messages list-group">
                     <!-- Messages will go here -->
